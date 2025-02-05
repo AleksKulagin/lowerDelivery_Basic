@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа</title>
+    <style>
+        .product-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+        }
+        .product-image {
+            max-width: 100px;
+            margin-right: 16px;
+        }
+        .product-info {
+            flex-grow: 1;
+        }
+        .product-name {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .product-price {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Оформление заказа</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.user.label_tag }} {{ form.user }}  <!-- Поле для выбора пользователя -->
+        <h2>Выберите товары:</h2>
+        {% for product in form.products %}
+            <div class="product-card">
+                {% if product.choice_label.image %}
+                    <img src="{{ product.choice_label.image.url }}" alt="{{ product.choice_label.name }}" class="product-image">
+                {% else %}
+                    <div class="product-image">Изображение отсутствует</div>
+                {% endif %}
+                <div class="product-info">
+                    <div class="product-name">{{ product.choice_label.name }}</div>
+                    <div class="product-price">{{ product.choice_label.price }} руб.</div>
+                    {{ product.tag }}  <!-- Чекбокс для выбора товара -->
+                </div>
+            </div>
+        {% endfor %}
+        <button type="submit">Оформить заказ</button>
+    </form>
+    <p><a href="{% url 'home' %}">На главную</a></p>
+</body>
+</html>

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegistrationForm
 from .models import Product
+from .forms import OrderForm
 
 def home(request):
     """
@@ -27,3 +28,17 @@ def product_list(request):
     """
     products = Product.objects.all()
     return render(request, 'product_list.html', {'products': products})
+
+
+def create_order(request):
+    """
+    View для оформления заказа.
+    """
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home') # <!-- Перенаправляем на главную страницу после оформления заказа -->
+    else:
+        form = OrderForm()
+    return render(request, 'create_order.html', {'form': form})
