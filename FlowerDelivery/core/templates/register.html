@@ -8,8 +8,8 @@
 <body>
     <h1>Регистрация</h1>
     <form method="post">
-        {% csrf_token %}  <!-- Защита от CSRF-атак -->
-        {{ form.as_p }}    <!-- Отображение формы -->
+        {% csrf_token %}
+        {{ form.as_p }}
         <button type="submit">Зарегистрироваться</button>
     </form>
 </body>
