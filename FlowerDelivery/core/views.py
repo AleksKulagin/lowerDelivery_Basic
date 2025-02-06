@@ -41,4 +41,9 @@ def create_order(request):
             return redirect('home') # <!-- Перенаправляем на главную страницу после оформления заказа -->
     else:
         form = OrderForm()
+
+    # Отладочный вывод
+    for product in form.products:
+        print(f"Product: {product.choice_label.name}, Image: {product.choice_label.image}")
+
     return render(request, 'create_order.html', {'form': form})

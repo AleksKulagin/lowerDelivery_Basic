@@ -38,6 +38,7 @@
         {% for product in form.products %}
             <div class="product-card">
                 {% if product.choice_label.image %}
+                    <p>Изображение: {{ product.choice_label.image.url }}</p>
                     <img src="{{ product.choice_label.image.url }}" alt="{{ product.choice_label.name }}" class="product-image">
                 {% else %}
                     <div class="product-image">Изображение отсутствует</div>
