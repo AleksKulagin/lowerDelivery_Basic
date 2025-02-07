@@ -38,12 +38,13 @@ def create_order(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('home') # <!-- Перенаправляем на главную страницу после оформления заказа -->
+            return redirect('home')  # Перенаправляем на главную страницу после оформления заказа
     else:
         form = OrderForm()
 
     # Отладочный вывод
-    for product in form.products:
-        print(f"Product: {product.choice_label.name}, Image: {product.choice_label.image}")
+    products = form.fields['products'].queryset  # Получаем queryset товаров
+    for product in products:
+        print(f"Product: {product.name}, Image: {product.image}")
 
-    return render(request, 'create_order.html', {'form': form})
+    return render(request, 'create_order.html', {'form': form, 'products': products})
