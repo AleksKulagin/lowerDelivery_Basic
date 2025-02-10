@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from .forms import UserRegistrationForm
 from .models import Product
 from .forms import OrderForm
-from datetime import time
+from datetime import time, datetime
+
+
 
 def home(request):
     """
@@ -32,10 +34,19 @@ def product_list(request):
 
 
 def create_order(request):
-
     """
     View для оформления заказа.
     """
+
+    # Получаем текущее время
+    current_time = datetime.now().time()
+    start_time = datetime.strptime('08:00', '%H:%M').time()
+    end_time = datetime.strptime('14:00', '%H:%M').time()
+
+    # Проверяем, находится ли текущее время в пределах рабочего времени
+    if not (start_time <= current_time <= end_time):
+        return render(request, 'work_day.html')  # Перенаправляем на страницу "work_day.html"
+
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
