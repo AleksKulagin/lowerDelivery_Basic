@@ -4,7 +4,7 @@ class User(models.Model):
     """
     Модель для хранения информации о пользователях.
     """
-    name = models.CharField(max_length=100, verbose_name="Имя пользователя")
+    name = models.CharField(unique=True, max_length=100, verbose_name="Имя пользователя")
     email = models.EmailField(unique=True, verbose_name="Электронная почта")
 
     def __str__(self):
