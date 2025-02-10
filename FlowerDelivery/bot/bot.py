@@ -1,8 +1,10 @@
+
 import sys
 import os
 import logging
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
+from asgiref.sync import sync_to_async
 
 # Добавляем путь к проекту в PYTHONPATH
 project_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,18 +22,11 @@ try:
 except ImportError as e:
     print(f"Ошибка импорта модели Order: {e}")
 
-
-
-from config import BOT_TOKEN  # Импортируем токен из config.py
+from config import BOT_TOKEN
 
 # Настройка логирования
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-
-
-
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -43,24 +38,33 @@ async def get_orders(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     Обработчик команды /orders. Отправляет список заказов.
     """
-    orders = Order.objects.all()  # Получаем все заказы из базы данных
+    logger.info("Обработчик get_orders вызван")
+
+    # Используем sync_to_async для выполнения синхронного запроса к базе данных
+    orders = await sync_to_async(lambda: list(Order.objects.all()))()
+    count = len(orders)
+    logger.info(f"Найдено заказов: {count}")
+
     if orders:
         for order in orders:
+            products = await sync_to_async(lambda: list(order.products.all()))()
+            product_names = ', '.join([product.name for product in products])
             message = (
                 f"Заказ #{order.id}\n"
                 f"Пользователь: {order.user.name}\n"
-                f"Товары: {', '.join([product.name for product in order.products.all()])}\n"
+                f"Товары: {product_names}\n"
                 f"Дата: {order.created_at}"
             )
             await update.message.reply_text(message)
+            logger.info(f"Сообщение отправлено: {message}")
     else:
         await update.message.reply_text("Заказов пока нет.")
+        logger.info("Сообщение отправлено: Заказов пока нет.")
 
 def main():
     """
     Запуск бота.
     """
-    # Создаем приложение и передаем токен бота
     application = Application.builder().token(BOT_TOKEN).build()
 
     # Регистрируем обработчики команд
