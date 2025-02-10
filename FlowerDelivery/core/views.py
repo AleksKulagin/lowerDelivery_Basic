@@ -41,7 +41,7 @@ def create_order(request):
     # Получаем текущее время
     current_time = datetime.now().time()
     start_time = datetime.strptime('08:00', '%H:%M').time()
-    end_time = datetime.strptime('14:00', '%H:%M').time()
+    end_time = datetime.strptime('20:00', '%H:%M').time()
 
     # Проверяем, находится ли текущее время в пределах рабочего времени
     if not (start_time <= current_time <= end_time):

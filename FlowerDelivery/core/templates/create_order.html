@@ -1,56 +1,62 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оформление заказа</title>
-    <style>
-        .product-card {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 16px 0;
-            display: flex;
-            align-items: center;
-        }
-        .product-image {
-            max-width: 100px;
-            margin-right: 16px;
-        }
-        .product-info {
-            flex-grow: 1;
-        }
-        .product-name {
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-        .product-price {
-            color: #555;
-        }
-    </style>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
     <h1>Оформление заказа</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.user.label_tag }} {{ form.user }}  <!-- Поле для выбора пользователя -->
         <h2>Выберите товары:</h2>
-        {% for product in products %}
-            <div class="product-card">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-                {% else %}
-                    <div class="product-image">Изображение отсутствует</div>
-                {% endif %}
-                <div class="product-info">
-                    <div class="product-name">{{ product.name }}</div>
-                    <div class="product-price">{{ product.price }} руб.</div>
-                    <input type="checkbox" name="products" value="{{ product.id }}" id="product_{{ product.id }}">
+        <div class="product-grid">  <!-- Контейнер для размещения карточек товаров в виде сетки -->
+            {% for product in products %}
+                <div class="product-card">  <!-- Карточка отдельного товара -->
+                    {% if product.image %}
+                        <!-- Изображение товара, если оно доступно -->
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image" style="max-width: 10%;">
+                    {% else %}
+                        <!-- Замещающий элемент, если изображение отсутствует -->
+                        <div class="product-image">Изображение отсутствует</div>
+                    {% endif %}
+                    <div class="product-info">  <!-- Контейнер для информации о товаре -->
+                        <div class="product-name">{{ product.name }}</div>  <!-- Название товара -->
+                        <div class="product-price">{{ product.price }} руб.</div>  <!-- Цена товара -->
+                        <input type="checkbox" name="products" value="{{ product.id }}" id="product_{{ product.id }}">  <!-- Чекбокс для выбора товара -->
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
-        <button type="submit">Оформить заказ</button>
+            {% endfor %}
+        </div>
+        <button type="submit">Оформить заказ</button>  <!-- Кнопка для отправки формы заказа -->
     </form>
-    <p><a href="{% url 'home' %}">На главную</a></p>
-</body>
-</html>
+{% endblock %}
+
+<style>
+    .product-grid {
+        display: grid;  /* Используем CSS Grid для размещения элементов */
+        grid-template-columns: repeat(4, minmax(25%, 1fr));  /* Сетка из 4 колонок, каждая колонка минимум 50px и равная доля оставшегося пространства */
+        gap: 2px;  /* Расстояние между карточками */
+        margin-top: 2px;  /* Отступ сверху для отделения от других элементов */
+    }
+    .product-card {
+        border: 1px solid #ccc;  /* Граница вокруг карточки */
+        padding: 10px;  /* Внутренние отступы вокруг содержимого карточки */
+        border-radius: 5px;  /* Скругленные углы карточки */
+        text-align: center;  /* Центрирование текста внутри карточки */
+        background-color: #add8e6;  /* Фоновый цвет карточки */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* Легкая тень для придания объема */
+    }
+    .product-image {
+        margin-bottom: 10px;  /* Отступ снизу для отделения изображения от остального контента */
+    }
+    .product-info {
+        padding: 5px 0;  /* Внутренние отступы сверху и снизу для информации о товаре */
+    }
+    .product-name {
+        font-weight: bold;  /* Жирный шрифт для названия товара */
+        margin-bottom: 5px;  /* Отступ снизу для отделения от цены */
+    }
+    .product-price {
+        color: #555;  /* Цвет для выделения цены */
+        margin-bottom: 10px;  /* Отступ снизу для отделения от чекбокса */
+    }
+</style>

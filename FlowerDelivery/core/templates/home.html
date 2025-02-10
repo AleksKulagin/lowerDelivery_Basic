@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная страница</title>
-</head>
-<body>
+
+{% extends 'base.html' %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
     <h1>Добро пожаловать на сайт доставки цветов!</h1>
-    <p><a href="{% url 'register' %}">Зарегистрироваться</a></p>
-    <p><a href="{% url 'product_list' %}">Каталог товаров</a></p>
-    <p><a href="{% url 'create_order' %}">Оформить заказ</a></p>
-</body>
-</html>
+    <p>Выберите раздел в меню для продолжения.</p>
+{% endblock %}
