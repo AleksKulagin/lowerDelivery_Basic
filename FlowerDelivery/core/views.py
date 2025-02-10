@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import UserRegistrationForm
 from .models import Product
 from .forms import OrderForm
+from datetime import time
 
 def home(request):
     """
@@ -31,6 +32,7 @@ def product_list(request):
 
 
 def create_order(request):
+
     """
     View для оформления заказа.
     """

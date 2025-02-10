@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),  # Главная страница
     path('register/', views.register, name='register'),  # Регистрация
-    path('products/', views.product_list, name='product_list'),  # Каталог товаров
-path('create_order/', views.create_order, name='create_order'), # Создаем заказ
+    path('products/', views.product_list, name='product_list'),    # Каталог товаров
+    path('create_order/', views.create_order, name='create_order'), # Создаем заказ
+    #path('business_hours_info/', views.business_hours_info, name='business_hours_info'),  # ограничение по времени
 ]

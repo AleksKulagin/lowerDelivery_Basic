@@ -1,10 +1,11 @@
-
-import sys
-import os
-import logging
-from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
+from aiogram.types import Message
+from aiogram.fsm.storage.memory import MemoryStorage
 from asgiref.sync import sync_to_async
+import os
+import sys
+import logging
 
 # Добавляем путь к проекту в PYTHONPATH
 project_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,13 +29,20 @@ from config import BOT_TOKEN
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# Инициализация бота и диспетчера
+bot = Bot(token=BOT_TOKEN)
+storage = MemoryStorage()
+dp = Dispatcher(storage=storage)
+
+@dp.message(Command("start"))
+async def start_handler(message: Message):
     """
     Обработчик команды /start.
     """
-    await update.message.reply_text("Добро пожаловать! Используйте /orders для получения списка заказов.")
+    await message.answer("Добро пожаловать! Используйте /orders для получения списка заказов.")
 
-async def get_orders(update: Update, context: ContextTypes.DEFAULT_TYPE):
+@dp.message(Command("orders"))
+async def get_orders_handler(message: Message):
     """
     Обработчик команды /orders. Отправляет список заказов.
     """
@@ -47,32 +55,28 @@ async def get_orders(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if orders:
         for order in orders:
+            # Используем sync_to_async для получения связанных объектов
+            user = await sync_to_async(lambda: order.user)()
             products = await sync_to_async(lambda: list(order.products.all()))()
             product_names = ', '.join([product.name for product in products])
-            message = (
+            message_text = (
                 f"Заказ #{order.id}\n"
-                f"Пользователь: {order.user.name}\n"
+                f"Пользователь: {user.name}\n"
                 f"Товары: {product_names}\n"
                 f"Дата: {order.created_at}"
             )
-            await update.message.reply_text(message)
-            logger.info(f"Сообщение отправлено: {message}")
+            await message.answer(message_text)
+            logger.info(f"Сообщение отправлено: {message_text}")
     else:
-        await update.message.reply_text("Заказов пока нет.")
+        await message.answer("Заказов пока нет.")
         logger.info("Сообщение отправлено: Заказов пока нет.")
 
-def main():
+async def main():
     """
     Запуск бота.
     """
-    application = Application.builder().token(BOT_TOKEN).build()
-
-    # Регистрируем обработчики команд
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("orders", get_orders))
-
-    # Запускаем бота
-    application.run_polling()
+    await dp.start_polling(bot)
 
 if __name__ == '__main__':
-    main()
+    import asyncio
+    asyncio.run(main())

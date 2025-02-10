@@ -1,5 +1,7 @@
-from telegram import Update
-from telegram.ext import ContextTypes
+from aiogram import types
+from aiogram.filters import Command
+from aiogram.types import Message
+from asgiref.sync import sync_to_async
 
 try:
     from core.models import Order
@@ -7,23 +9,25 @@ try:
 except ImportError as e:
     print(f"Ошибка импорта модели Order: {e}")
 
-
-async def order_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def order_command(message: Message):
     """
     Обработчик команды /orders. Отправляет список заказов.
     """
-    orders = Order.objects.all()  # Получаем все заказы из базы данных
+    # Используем sync_to_async для выполнения синхронного запроса к базе данных
+    orders = await sync_to_async(lambda: list(Order.objects.all()))()
+
     if orders:
         for order in orders:
-            message = (
+            # Используем sync_to_async для получения связанных объектов
+            user = await sync_to_async(lambda: order.user)()
+            products = await sync_to_async(lambda: list(order.products.all()))()
+            product_names = ', '.join([product.name for product in products])
+            message_text = (
                 f"Заказ #{order.id}\n"
-                f"Пользователь: {order.user.name}\n"
-                f"Товары: {', '.join([product.name for product in order.products.all()])}\n"
+                f"Пользователь: {user.name}\n"
+                f"Товары: {product_names}\n"
                 f"Дата: {order.created_at}"
             )
-            await update.message.reply_text(message)
+            await message.answer(message_text)
     else:
-        await update.message.reply_text("Заказов пока нет.")
-
-# Регистрируем обработчик команды /orders
-order_handler = CommandHandler('orders', order_command)
+        await message.answer("Заказов пока нет.")
