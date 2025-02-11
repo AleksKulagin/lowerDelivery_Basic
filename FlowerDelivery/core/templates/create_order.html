@@ -7,6 +7,7 @@
     <form method="post">
         {% csrf_token %}
         {{ form.user.label_tag }} {{ form.user }}  <!-- Поле для выбора пользователя -->
+        <button type="submit">Оформить заказ</button>  <!-- Кнопка для отправки формы заказа -->
         <h2>Выберите товары:</h2>
         <div class="product-grid">  <!-- Контейнер для размещения карточек товаров в виде сетки -->
             {% for product in products %}
@@ -21,7 +22,7 @@
                     <div class="product-info">  <!-- Контейнер для информации о товаре -->
                         <div class="product-name">{{ product.name }}</div>  <!-- Название товара -->
                         <div class="product-price">{{ product.price }} руб.</div>  <!-- Цена товара -->
-                        <input type="checkbox" name="products" value="{{ product.id }}" id="product_{{ product.id }}">  <!-- Чекбокс для выбора товара -->
+                        <input type="checkbox" class="checkbox-size" name="products" value="{{ product.id }}" id="product_{{ product.id }}">  <!-- Чекбокс для выбора товара -->
                     </div>
                 </div>
             {% endfor %}
@@ -49,7 +50,14 @@
             font-weight: bold;  /* Жирный шрифт для названия товара */
         }
         .product-price {
-            color: #555;  /* Цвет для цены */
+            color: #4B0082;  /* Цвет для цены */
+            font-weight: bold;
+            font-size: 25px; /* Размер шрифта */
         }
+        .checkbox-size {
+            width: 20px;  /* Ширина чекбокса */
+            height: 20px; /* Высота чекбокса */
+        }
+
     </style>
 {% endblock %}

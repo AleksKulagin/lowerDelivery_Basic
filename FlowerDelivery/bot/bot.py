@@ -19,7 +19,7 @@ django.setup()
 
 try:
     from core.models import Order
-    print("Импорт модели Order выполнен успешно!")
+
 except ImportError as e:
     print(f"Ошибка импорта модели Order: {e}")
 
