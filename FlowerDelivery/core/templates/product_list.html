@@ -4,16 +4,51 @@
 
 {% block content %}
     <h1>Каталог товаров</h1>
-    <ul>
+    <div class="product-grid">  <!-- Контейнер для размещения карточек товаров в виде сетки -->
         {% for product in products %}
-            <li>
-                <strong>{{ product.name }}</strong> - {{ product.price }} руб.
+            <div class="product-card">  <!-- Карточка отдельного товара -->
+                <strong class="product-name">{{ product.name }}</strong>  <!-- Название товара -->
+                <div class="product-price">{{ product.price }} руб.</div>  <!-- Цена товара -->
                 {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px;">
+                    <!-- Изображение товара, если оно доступно -->
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
                 {% else %}
-                    <p>Изображение отсутствует</p>
+                    <!-- Замещающий элемент, если изображение отсутствует -->
+                    <div class="product-image">Изображение отсутствует</div>
                 {% endif %}
-            </li>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
+
+    <style>
+        /* Стили для создания плитки по 3 карточки в строке */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);  /* 3 колонки с равной шириной */
+            gap: 20px;  /* Расстояние между карточками */
+            padding: 20px;  /* Внутренние отступы для контейнера */
+        }
+        .product-card {
+            border: 1px solid #ccc;  /* Граница карточки */
+            padding: 15px;  /* Внутренние отступы */
+            text-align: center;  /* Центрирование содержимого */
+            background-color: #f9f9f9;  /* Фоновый цвет карточки */
+            border-radius: 8px;  /* Скругленные углы */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* Тень для карточки */
+        }
+        .product-image {
+            max-width: 100%;  /* Изображение не превышает ширину карточки */
+            height: auto;  /* Сохранение пропорций изображения */
+            border-radius: 5px;  /* Скругленные углы для изображения */
+        }
+        .product-name {
+            font-size: 1.2em;  /* Размер шрифта для названия товара */
+            margin-bottom: 10px;  /* Отступ снизу */
+        }
+        .product-price {
+            color: #333;  /* Цвет для цены */
+            font-weight: bold;  /* Жирный шрифт для цены */
+            margin-bottom: 15px;  /* Отступ снизу */
+        }
+    </style>
 {% endblock %}

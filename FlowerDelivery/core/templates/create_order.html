@@ -13,7 +13,7 @@
                 <div class="product-card">  <!-- Карточка отдельного товара -->
                     {% if product.image %}
                         <!-- Изображение товара, если оно доступно -->
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image" style="max-width: 10%;">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
                     {% else %}
                         <!-- Замещающий элемент, если изображение отсутствует -->
                         <div class="product-image">Изображение отсутствует</div>
@@ -28,35 +28,28 @@
         </div>
         <button type="submit">Оформить заказ</button>  <!-- Кнопка для отправки формы заказа -->
     </form>
-{% endblock %}
 
-<style>
-    .product-grid {
-        display: grid;  /* Используем CSS Grid для размещения элементов */
-        grid-template-columns: repeat(4, minmax(25%, 1fr));  /* Сетка из 4 колонок, каждая колонка минимум 50px и равная доля оставшегося пространства */
-        gap: 2px;  /* Расстояние между карточками */
-        margin-top: 2px;  /* Отступ сверху для отделения от других элементов */
-    }
-    .product-card {
-        border: 1px solid #ccc;  /* Граница вокруг карточки */
-        padding: 10px;  /* Внутренние отступы вокруг содержимого карточки */
-        border-radius: 5px;  /* Скругленные углы карточки */
-        text-align: center;  /* Центрирование текста внутри карточки */
-        background-color: #add8e6;  /* Фоновый цвет карточки */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* Легкая тень для придания объема */
-    }
-    .product-image {
-        margin-bottom: 10px;  /* Отступ снизу для отделения изображения от остального контента */
-    }
-    .product-info {
-        padding: 5px 0;  /* Внутренние отступы сверху и снизу для информации о товаре */
-    }
-    .product-name {
-        font-weight: bold;  /* Жирный шрифт для названия товара */
-        margin-bottom: 5px;  /* Отступ снизу для отделения от цены */
-    }
-    .product-price {
-        color: #555;  /* Цвет для выделения цены */
-        margin-bottom: 10px;  /* Отступ снизу для отделения от чекбокса */
-    }
-</style>
+    <style>
+        /* Стили для создания плитки по 3 карточки в строке */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);  /* 3 колонки с равной шириной */
+            gap: 10px;  /* Расстояние между карточками */
+        }
+        .product-card {
+            border: 1px solid #ccc;  /* Граница карточки */
+            padding: 10px;  /* Внутренние отступы */
+            text-align: center;  /* Центрирование содержимого */
+        }
+        .product-image {
+            max-width: 100%;  /* Изображение не превышает ширину карточки */
+            height: auto;  /* Сохранение пропорций изображения */
+        }
+        .product-name {
+            font-weight: bold;  /* Жирный шрифт для названия товара */
+        }
+        .product-price {
+            color: #555;  /* Цвет для цены */
+        }
+    </style>
+{% endblock %}
